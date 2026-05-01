@@ -802,7 +802,7 @@ textarea:focus {
   .main-content {
     margin-left: 0;
     padding: 1rem;
-    padding-bottom: 5rem; /* Space for bottom nav if we had one, or just safe area */
+    padding-bottom: 80px; /* Mais espaço para não cobrir o conteúdo com a bottom nav */
   }
   .sidebar {
     position: fixed;
@@ -826,6 +826,7 @@ textarea:focus {
     align-items: center;
     padding: 0;
     margin: 0;
+    flex: 3; /* Give more space to main nav items */
   }
   .nav-item {
     margin: 0;
@@ -843,6 +844,22 @@ textarea:focus {
     display: block !important;
     font-size: 0.6rem;
   }
+  .mobile-only-logout {
+    display: flex !important;
+    flex: 1;
+    justify-content: center;
+  }
+  .logout-mobile-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+  }
+}
+
+.mobile-only-logout {
+  display: none;
 }
 
 /* Patient Profile Sections */

@@ -69,7 +69,15 @@ const PatientProfile = () => {
   });
 
   useEffect(() => {
-    fetchData();
+    // Validação básica de UUID para evitar erros no Supabase
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    
+    if (id && uuidRegex.test(id)) {
+      fetchData();
+    } else if (id) {
+      console.error('ID de paciente inválido:', id);
+      setLoading(false);
+    }
   }, [id]);
 
   const fetchData = async () => {
