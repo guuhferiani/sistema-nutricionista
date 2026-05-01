@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const DietPlanHistory = ({ planos }) => {
+const DietPlanHistory = ({ planos, onEdit }) => {
   const [selectedPlan, setSelectedPlan] = useState(null);
 
   const mealLabels = {
@@ -14,18 +14,38 @@ const DietPlanHistory = ({ planos }) => {
   if (selectedPlan) {
     return (
       <div className="plan-view">
-        <button 
-          className="btn-secondary" 
-          onClick={() => setSelectedPlan(null)}
-          style={{ width: 'auto', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
-        >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-          Voltar para a Lista
-        </button>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+          <button 
+            className="btn-secondary" 
+            onClick={() => setSelectedPlan(null)}
+            style={{ width: 'auto', display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: 0 }}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            Voltar para a Lista
+          </button>
+          <button 
+            className="btn-primary" 
+            onClick={() => window.print()}
+            style={{ width: 'auto', background: 'var(--primary)', color: 'white', border: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 9V2h12v7"></path><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+            Exportar PDF / Imprimir
+          </button>
+        </div>
 
-        <header style={{ marginBottom: '2rem' }}>
-          <h3 style={{ margin: 0 }}>Plano de {new Date(selectedPlan.created_at).toLocaleDateString('pt-BR')}</h3>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>ID: {selectedPlan.id.substring(0, 8)}</p>
+        <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+          <div>
+            <h3 style={{ margin: 0 }}>Plano de {new Date(selectedPlan.created_at).toLocaleDateString('pt-BR')}</h3>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>ID: {selectedPlan.id.substring(0, 8)}</p>
+          </div>
+          <button 
+            className="btn-primary" 
+            onClick={() => onEdit(selectedPlan)}
+            style={{ width: 'auto', background: 'var(--primary-light)', color: 'var(--primary)', border: 'none' }}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+            Editar este Plano
+          </button>
         </header>
 
         <div className="diet-grid" style={{ 

@@ -88,10 +88,12 @@ const DietPlanGenerator = ({ patient, onSaveSuccess, onClose }) => {
 
   if (loading) {
     return (
-      <div className="loading-container" style={{ padding: '2rem', textAlign: 'center' }}>
-        <div className="spinner"></div>
-        <p style={{ marginTop: '1rem' }}>A IA está elaborando um plano personalizado para {patient.nome}...</p>
-        <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>Isso pode levar alguns segundos.</p>
+      <div className="loading-container">
+        <div className="spinner-premium"></div>
+        <h3 style={{ color: 'var(--text-main)', marginBottom: '0.5rem' }}>Criando Plano Personalizado</h3>
+        <p style={{ color: 'var(--text-muted)', textAlign: 'center', maxWidth: '300px' }}>
+          Nossa IA está analisando os dados de <strong>{patient.nome}</strong> para elaborar a melhor estratégia nutricional...
+        </p>
       </div>
     );
   }
@@ -99,65 +101,74 @@ const DietPlanGenerator = ({ patient, onSaveSuccess, onClose }) => {
   if (!editingPlan) {
     return (
       <div style={{ textAlign: 'center', padding: '3rem' }}>
-        <div style={{ marginBottom: '1.5rem', color: 'var(--primary)' }}>
-          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+        <div style={{ marginBottom: '2rem', color: 'var(--primary)' }}>
+          <div style={{ 
+            width: '80px', 
+            height: '80px', 
+            background: 'var(--primary-light)', 
+            borderRadius: '50%', 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center',
+            margin: '0 auto'
+          }}>
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
+          </div>
         </div>
-        <h3>Gerador de Plano com IA</h3>
-        <p style={{ color: 'var(--text-muted)', maxWidth: '400px', margin: '0.5rem auto 2rem' }}>
-          Utilizaremos os dados clínicos, objetivos e restrições de {patient.nome} para criar um plano semanal equilibrado.
+        <h2 style={{ marginBottom: '1rem' }}>Gerador de Plano com IA</h2>
+        <p style={{ color: 'var(--text-muted)', maxWidth: '450px', margin: '0 auto 2.5rem', lineHeight: '1.6' }}>
+          Utilizaremos inteligência artificial avançada para cruzar dados antropométricos, objetivos clínicos e restrições alimentares, gerando um plano semanal completo.
         </p>
-        <button className="btn-primary" onClick={generatePlan} style={{ width: 'auto' }}>
-          Gerar Plano Agora
+        <button className="btn-primary" onClick={generatePlan} style={{ padding: '1rem 2.5rem', fontSize: '1rem', margin: '0 auto' }}>
+          Iniciar Geração Inteligente
         </button>
       </div>
     );
   }
 
   return (
-    <div className="diet-generator-results">
-      <header style={{ marginBottom: '2rem' }}>
-        <h3 style={{ margin: 0 }}>Plano de {new Date().toLocaleDateString('pt-BR')}</h3>
-        <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>ID: {editingPlan.id?.substring(0, 8) || 'Novo'}</p>
+    <div className="diet-results-container">
+      <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem', borderBottom: '1px solid var(--border)', paddingBottom: '1.5rem' }}>
+        <div>
+          <h3 style={{ margin: 0, fontSize: '1.5rem' }}>Sugestão de Plano Semanal</h3>
+          <p style={{ color: 'var(--text-muted)', margin: '0.25rem 0 0' }}>Revise e ajuste as opções abaixo antes de salvar.</p>
+        </div>
+        <div style={{ display: 'flex', gap: '1rem' }}>
+          <button className="btn-secondary" onClick={() => setEditingPlan(null)}>Recomeçar</button>
+          <div style={{ display: 'flex', gap: '1rem' }}>
+            <button className="btn-secondary" onClick={() => window.print()} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 9V2h12v7"></path><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+              Imprimir / PDF
+            </button>
+            <button className="btn-primary" onClick={savePlan} disabled={saving} style={{ width: 'auto' }}>
+              {saving ? 'Salvando...' : 'Salvar Plano Alimentar'}
+            </button>
+          </div>
+        </div>
       </header>
 
-      <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginBottom: '2rem' }}>
-        <button className="btn-secondary" onClick={() => setEditingPlan(null)} style={{ width: 'auto' }}>Recomeçar</button>
-        <button className="btn-primary" onClick={savePlan} disabled={saving} style={{ width: 'auto' }}>
-          {saving ? 'Salvando...' : 'Salvar no Prontuário'}
-        </button>
-      </div>
-
-      <div className="diet-grid" style={{ 
-        display: 'grid', 
-        gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', 
-        gap: '1.5rem' 
-      }}>
+      <div className="diet-grid">
         {editingPlan.plano_semanal.map((dia, dayIdx) => (
-          <div key={dia.dia} className="day-column" style={{ width: '100%' }}>
-            <div style={{ background: 'var(--primary)', color: 'white', padding: '0.75rem 1rem', borderRadius: '0.75rem', marginBottom: '1rem', fontWeight: 'bold', textAlign: 'center' }}>
+          <div key={dia.dia} className="day-column">
+            <div className="day-header">
               {dia.dia}
             </div>
             
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
               {Object.entries(dia.refeicoes).map(([mealKey, options]) => (
-                <div key={mealKey} className="meal-card" style={{ background: 'white', border: '1px solid var(--border)', borderRadius: '1rem', padding: '1rem', boxShadow: 'var(--shadow-sm)' }}>
-                  <div style={{ fontWeight: '600', marginBottom: '0.75rem', fontSize: '0.9rem', color: 'var(--primary)' }}>
+                <div key={mealKey} className="meal-card">
+                  <div className="meal-title">
                     {mealLabels[mealKey] || mealKey}
                   </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
                     {options.map((opt, optIdx) => (
                       <input 
                         key={optIdx}
                         type="text"
+                        className="option-input"
                         value={opt}
                         onChange={(e) => handleOptionChange(dayIdx, mealKey, optIdx, e.target.value)}
-                        style={{ 
-                          width: '100%', 
-                          padding: '0.5rem', 
-                          borderRadius: '0.5rem', 
-                          border: '1px solid #f0f0f0', 
-                          fontSize: '0.85rem' 
-                        }}
+                        placeholder={`Opção ${optIdx + 1}`}
                       />
                     ))}
                   </div>

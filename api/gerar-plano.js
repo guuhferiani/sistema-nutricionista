@@ -41,38 +41,38 @@ export default async function handler(req, res) {
   });
 
   const prompt = `
-Você é um nutricionista profissional.
-Gere um plano alimentar semanal com base nos dados abaixo.
+Você é um nutricionista clínico de alta performance, especializado em nutrição personalizada e esportiva.
+Gere um plano alimentar semanal (7 dias: Segunda a Domingo) para o paciente abaixo, com foco em seus objetivos e respeitando RIGOROSAMENTE suas restrições e alergias.
 
-⚠️ Regras:
-- Responda APENAS em JSON válido
-- Não use markdown
-- Respeite restrições e alergias
-
-Dados do paciente:
+DADOS DO PACIENTE:
 ${JSON.stringify(dados_do_paciente, null, 2)}
 
-Formato obrigatório:
+DIRETRIZES TÉCNICAS:
+1. Variedade: Evite repetições excessivas. Alterne fontes de proteína, carboidratos e gorduras boas.
+2. Contexto Brasileiro: Use alimentos acessíveis e comuns na culinária do Brasil (ex: feijão, arroz, tapioca, frutas tropicais).
+3. Estrutura: Para cada uma das 5 refeições do dia, você deve fornecer exatamente 5 OPÇÕES distintas e saudáveis.
+4. Clareza: Cada opção deve ser descritiva e incluir medidas caseiras (ex: "1 colher de servir", "2 fatias", "200ml").
+
+⚠️ REGRAS DE SAÍDA:
+- Responda APENAS em JSON válido.
+- Não inclua explicações fora do JSON.
+- Respeite o formato exato abaixo.
+
+FORMATO JSON OBRIGATÓRIO:
 {
   "plano_semanal": [
     {
       "dia": "Segunda-feira",
       "refeicoes": {
-        "cafe_da_manha": ["opção 1", "opção 2", "opção 3", "opção 4", "opção 5"],
-        "lanche_manha": ["opção 1", "opção 2", "opção 3", "opção 4", "opção 5"],
-        "almoco": ["opção 1", "opção 2", "opção 3", "opção 4", "opção 5"],
-        "lanche_tarde": ["opção 1", "opção 2", "opção 3", "opção 4", "opção 5"],
-        "jantar": ["opção 1", "opção 2", "opção 3", "opção 4", "opção 5"]
+        "cafe_da_manha": ["Opção 1 com medidas", "Opção 2", "Opção 3", "Opção 4", "Opção 5"],
+        "lanche_manha": ["Opção 1", "Opção 2", "Opção 3", "Opção 4", "Opção 5"],
+        "almoco": ["Opção 1", "Opção 2", "Opção 3", "Opção 4", "Opção 5"],
+        "lanche_tarde": ["Opção 1", "Opção 2", "Opção 3", "Opção 4", "Opção 5"],
+        "jantar": ["Opção 1", "Opção 2", "Opção 3", "Opção 4", "Opção 5"]
       }
     }
   ]
 }
-
-Regras:
-- gerar 7 dias (Segunda a Domingo)
-- 5 opções por refeição
-- evitar repetição
-- usar alimentos comuns no Brasil
 `;
 
   let attempts = 0;
