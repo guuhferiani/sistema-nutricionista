@@ -60,19 +60,30 @@ const DietPlanHistory = ({ planos }) => {
             Voltar para a Lista
           </button>
 
-          {!isEditing ? (
-            <button className="btn-primary" onClick={startEditing} style={{ width: 'auto' }}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginRight: '0.5rem' }}><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-              Editar Plano
+          <div style={{ display: 'flex', gap: '0.75rem' }}>
+            <button 
+              className="btn-secondary" 
+              onClick={() => window.print()}
+              style={{ width: 'auto', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 9V2h12v7"></path><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+              Imprimir / PDF
             </button>
-          ) : (
-            <div style={{ display: 'flex', gap: '0.5rem' }}>
-              <button className="btn-secondary" onClick={() => setIsEditing(false)} style={{ width: 'auto' }}>Cancelar</button>
-              <button className="btn-primary" onClick={saveChanges} disabled={saving} style={{ width: 'auto' }}>
-                {saving ? 'Salvando...' : 'Salvar Alterações'}
+            
+            {!isEditing ? (
+              <button className="btn-primary" onClick={startEditing} style={{ width: 'auto' }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginRight: '0.5rem' }}><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                Editar Plano
               </button>
-            </div>
-          )}
+            ) : (
+              <div style={{ display: 'flex', gap: '0.5rem' }}>
+                <button className="btn-secondary" onClick={() => setIsEditing(false)} style={{ width: 'auto' }}>Cancelar</button>
+                <button className="btn-primary" onClick={saveChanges} disabled={saving} style={{ width: 'auto' }}>
+                  {saving ? 'Salvando...' : 'Salvar Alterações'}
+                </button>
+              </div>
+            )}
+          </div>
         </div>
 
         <header style={{ marginBottom: '2rem' }}>

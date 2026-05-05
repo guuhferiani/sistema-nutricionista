@@ -201,10 +201,31 @@ const NovoPaciente = () => {
         {error && <div className="error-message">{error}</div>}
 
         <div className="tabs-container">
+          <div style={{ padding: '1.5rem 2.5rem 0.5rem' }}>
+            <div className="progress-bar-container" style={{ height: '6px', background: '#f0f0f0', borderRadius: '10px', marginBottom: '2rem', position: 'relative', overflow: 'hidden' }}>
+              <div 
+                className="progress-bar-fill" 
+                style={{ 
+                  height: '100%', 
+                  background: 'var(--primary)', 
+                  width: activeTab === 'pessoal' ? '33%' : activeTab === 'clinico' ? '66%' : '100%',
+                  transition: 'width 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                  boxShadow: '0 0 10px var(--primary-glass)'
+                }} 
+              />
+            </div>
+          </div>
+          
           <div className="tabs-header">
-            <button type="button" className={`tab-btn ${activeTab === 'pessoal' ? 'active' : ''}`} onClick={() => setActiveTab('pessoal')}>1. Pessoal</button>
-            <button type="button" className={`tab-btn ${activeTab === 'clinico' ? 'active' : ''}`} onClick={() => setActiveTab('clinico')}>2. Clínico</button>
-            <button type="button" className={`tab-btn ${activeTab === 'habitos' ? 'active' : ''}`} onClick={() => setActiveTab('habitos')}>3. Hábitos</button>
+            <button type="button" className={`tab-btn ${activeTab === 'pessoal' ? 'active' : ''}`} onClick={() => setActiveTab('pessoal')}>
+              <span className="step-number">1</span> Pessoal
+            </button>
+            <button type="button" className={`tab-btn ${activeTab === 'clinico' ? 'active' : ''}`} onClick={() => setActiveTab('clinico')}>
+              <span className="step-number">2</span> Clínico
+            </button>
+            <button type="button" className={`tab-btn ${activeTab === 'habitos' ? 'active' : ''}`} onClick={() => setActiveTab('habitos')}>
+              <span className="step-number">3</span> Hábitos
+            </button>
           </div>
 
           <form className="tab-content" onSubmit={handleSubmit}>
