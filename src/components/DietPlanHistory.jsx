@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
+import { supabase } from '../lib/supabaseClient';
 
 const DietPlanHistory = ({ planos }) => {
   const [selectedPlan, setSelectedPlan] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedContent, setEditedContent] = useState(null);
+  const [saving, setSaving] = useState(false);
 
   const mealLabels = {
     cafe_da_manha: '☀️ Café da Manhã',
@@ -11,17 +15,65 @@ const DietPlanHistory = ({ planos }) => {
     jantar: '🍲 Jantar'
   };
 
+  const startEditing = () => {
+    setEditedContent(JSON.parse(JSON.stringify(selectedPlan.conteudo)));
+    setIsEditing(true);
+  };
+
+  const handleOptionChange = (dayIndex, mealKey, optionIndex, newValue) => {
+    const newContent = { ...editedContent };
+    newContent.plano_semanal[dayIndex].refeicoes[mealKey][optionIndex] = newValue;
+    setEditedContent(newContent);
+  };
+
+  const saveChanges = async () => {
+    try {
+      setSaving(true);
+      const { error } = await supabase
+        .from('planos_alimentares')
+        .update({ conteudo: editedContent })
+        .eq('id', selectedPlan.id);
+
+      if (error) throw error;
+
+      alert('Plano alimentar atualizado com sucesso!');
+      selectedPlan.conteudo = editedContent;
+      setIsEditing(false);
+    } catch (error) {
+      console.error('Erro ao salvar:', error);
+      alert('Erro ao atualizar plano alimentar.');
+    } finally {
+      setSaving(false);
+    }
+  };
+
   if (selectedPlan) {
     return (
       <div className="plan-view">
-        <button 
-          className="btn-secondary" 
-          onClick={() => setSelectedPlan(null)}
-          style={{ width: 'auto', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
-        >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-          Voltar para a Lista
-        </button>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+          <button 
+            className="btn-secondary" 
+            onClick={() => { setSelectedPlan(null); setIsEditing(false); }}
+            style={{ width: 'auto', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            Voltar para a Lista
+          </button>
+
+          {!isEditing ? (
+            <button className="btn-primary" onClick={startEditing} style={{ width: 'auto' }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginRight: '0.5rem' }}><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+              Editar Plano
+            </button>
+          ) : (
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
+              <button className="btn-secondary" onClick={() => setIsEditing(false)} style={{ width: 'auto' }}>Cancelar</button>
+              <button className="btn-primary" onClick={saveChanges} disabled={saving} style={{ width: 'auto' }}>
+                {saving ? 'Salvando...' : 'Salvar Alterações'}
+              </button>
+            </div>
+          )}
+        </div>
 
         <header style={{ marginBottom: '2rem' }}>
           <h3 style={{ margin: 0 }}>Plano de {new Date(selectedPlan.created_at).toLocaleDateString('pt-BR')}</h3>
@@ -33,7 +85,7 @@ const DietPlanHistory = ({ planos }) => {
           gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', 
           gap: '1.5rem' 
         }}>
-          {selectedPlan.conteudo.plano_semanal.map((dia) => (
+          {(isEditing ? editedContent : selectedPlan.conteudo).plano_semanal.map((dia, dayIdx) => (
             <div key={dia.dia} className="day-column" style={{ width: '100%' }}>
               <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', padding: '0.75rem 1rem', borderRadius: '0.75rem', marginBottom: '1rem', fontWeight: 'bold', textAlign: 'center' }}>
                 {dia.dia}
@@ -45,13 +97,34 @@ const DietPlanHistory = ({ planos }) => {
                     <div style={{ fontWeight: '600', marginBottom: '0.75rem', fontSize: '0.9rem', color: 'var(--primary)' }}>
                       {mealLabels[mealKey] || mealKey}
                     </div>
-                    <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                      {options.map((opt, idx) => (
-                        <li key={idx} style={{ fontSize: '0.85rem', color: 'var(--text-main)', borderLeft: '3px solid var(--primary-light)', paddingLeft: '0.5rem' }}>
-                          {opt}
-                        </li>
-                      ))}
-                    </ul>
+                    
+                    {!isEditing ? (
+                      <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                        {options.map((opt, idx) => (
+                          <li key={idx} style={{ fontSize: '0.85rem', color: 'var(--text-main)', borderLeft: '3px solid var(--primary-light)', paddingLeft: '0.5rem' }}>
+                            {opt}
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                        {options.map((opt, optIdx) => (
+                          <input 
+                            key={optIdx}
+                            type="text"
+                            value={opt}
+                            onChange={(e) => handleOptionChange(dayIdx, mealKey, optIdx, e.target.value)}
+                            style={{ 
+                              width: '100%', 
+                              padding: '0.5rem', 
+                              borderRadius: '0.5rem', 
+                              border: '1px solid #f0f0f0', 
+                              fontSize: '0.85rem' 
+                            }}
+                          />
+                        ))}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>

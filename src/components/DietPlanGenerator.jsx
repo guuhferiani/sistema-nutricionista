@@ -86,6 +86,29 @@ const DietPlanGenerator = ({ patient, onSaveSuccess, onClose }) => {
     jantar: '🍲 Jantar'
   };
 
+  const startManualPlan = () => {
+    const dias = [
+      'Segunda-feira', 'Terça-feira', 'Quarta-feira', 
+      'Quinta-feira', 'Sexta-feira', 'Sábado', 'Domingo'
+    ];
+    
+    const emptyPlan = {
+      plano_semanal: dias.map(dia => ({
+        dia,
+        refeicoes: {
+          cafe_da_manha: ["", "", "", "", ""],
+          lanche_manha: ["", "", "", "", ""],
+          almoco: ["", "", "", "", ""],
+          lanche_tarde: ["", "", "", "", ""],
+          jantar: ["", "", "", "", ""]
+        }
+      }))
+    };
+    
+    setEditingPlan(emptyPlan);
+    setGeneratedPlan(emptyPlan);
+  };
+
   if (loading) {
     return (
       <div className="loading-container" style={{ padding: '2rem', textAlign: 'center' }}>
@@ -102,13 +125,20 @@ const DietPlanGenerator = ({ patient, onSaveSuccess, onClose }) => {
         <div style={{ marginBottom: '1.5rem', color: 'var(--primary)' }}>
           <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
         </div>
-        <h3>Gerador de Plano com IA</h3>
+        <h3>Gestão de Plano Alimentar</h3>
         <p style={{ color: 'var(--text-muted)', maxWidth: '400px', margin: '0.5rem auto 2rem' }}>
-          Utilizaremos os dados clínicos, objetivos e restrições de {patient.nome} para criar um plano semanal equilibrado.
+          Escolha como deseja elaborar o plano alimentar para {patient.nome}.
         </p>
-        <button className="btn-primary" onClick={generatePlan} style={{ width: 'auto' }}>
-          Gerar Plano Agora
-        </button>
+        <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+          <button className="btn-primary" onClick={generatePlan} style={{ width: 'auto' }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginRight: '0.5rem' }}><path d="M21 12a9 9 0 0 1-9 9m9-9a9 9 0 0 0-9-9m9 9H3m9 9a9 9 0 0 1-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 0 1 9-9"></path></svg>
+            Gerar com IA
+          </button>
+          <button className="btn-secondary" onClick={startManualPlan} style={{ width: 'auto' }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginRight: '0.5rem' }}><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+            Criar Manualmente
+          </button>
+        </div>
       </div>
     );
   }
