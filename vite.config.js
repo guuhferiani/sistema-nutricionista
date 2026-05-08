@@ -4,7 +4,8 @@ import { readFileSync } from 'fs'
 import path from 'path'
 import dotenv from 'dotenv'
 
-// Carregar variáveis de ambiente do .env para o processo do servidor
+// Carregar variáveis de ambiente
+dotenv.config({ path: '.env.local' })
 dotenv.config({ path: '.env' })
 
 // https://vite.dev/config/

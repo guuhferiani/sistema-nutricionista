@@ -35,8 +35,8 @@ export default async function handler(req, res) {
   }
 
   const genAI = new GoogleGenerativeAI(GOOGLE_API_KEY);
-  const model = genAI.getGenerativeModel({ 
-    model: "gemini-1.5-flash",
+  const model = genAI.getGenerativeModel({
+    model: "gemini-flash-latest",
     generationConfig: { responseMimeType: "application/json" }
   });
 
@@ -103,7 +103,7 @@ FORMATO JSON OBRIGATÓRIO:
     }
   }
 
-  return res.status(500).json({ 
+  return res.status(500).json({
     error: 'A IA gerou um plano com estrutura inválida após múltiplas tentativas.',
     details: 'A estrutura JSON não condiz com o esperado pelo sistema.'
   });
