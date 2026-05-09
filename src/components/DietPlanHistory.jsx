@@ -6,6 +6,7 @@ const DietPlanHistory = ({ planos }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [selectedDayIndex, setSelectedDayIndex] = useState(0);
 
   const mealLabels = {
     cafe_da_manha: '☀️ Café da Manhã',
@@ -91,56 +92,76 @@ const DietPlanHistory = ({ planos }) => {
           <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>ID: {selectedPlan.id.substring(0, 8)}</p>
         </header>
 
+        <div className="days-filter-container" style={{ display: 'flex', gap: '0.5rem', marginBottom: '2rem', overflowX: 'auto', paddingBottom: '0.5rem' }}>
+          {(isEditing ? editedContent : selectedPlan.conteudo).plano_semanal.map((dia, idx) => (
+            <button
+              key={dia.dia}
+              onClick={() => setSelectedDayIndex(idx)}
+              style={{
+                padding: '0.5rem 1rem',
+                borderRadius: '2rem',
+                border: '1px solid var(--border)',
+                background: selectedDayIndex === idx ? 'var(--primary)' : 'transparent',
+                color: selectedDayIndex === idx ? 'white' : 'var(--text-main)',
+                fontWeight: '600',
+                cursor: 'pointer',
+                whiteSpace: 'nowrap',
+                transition: 'all 0.2s'
+              }}
+            >
+              {dia.dia}
+            </button>
+          ))}
+        </div>
+
         <div className="diet-grid" style={{ 
           display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', 
+          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', 
           gap: '1.5rem' 
         }}>
-          {(isEditing ? editedContent : selectedPlan.conteudo).plano_semanal.map((dia, dayIdx) => (
-            <div key={dia.dia} className="day-column" style={{ width: '100%' }}>
-              <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', padding: '0.75rem 1rem', borderRadius: '0.75rem', marginBottom: '1rem', fontWeight: 'bold', textAlign: 'center' }}>
-                {dia.dia}
+          {['cafe_da_manha', 'lanche_manha', 'almoco', 'lanche_tarde', 'jantar'].map((mealKey) => {
+            const options = (isEditing ? editedContent : selectedPlan.conteudo).plano_semanal[selectedDayIndex].refeicoes[mealKey];
+            if (!options) return null;
+            return (
+            <div key={mealKey} className="meal-card" style={{ background: 'var(--card-bg)', border: '1px solid var(--border)', borderRadius: '1rem', padding: '1.25rem', boxShadow: 'var(--shadow-sm)' }}>
+              <div style={{ fontWeight: '700', marginBottom: '1rem', fontSize: '1rem', color: 'var(--primary)' }}>
+                {mealLabels[mealKey] || mealKey}
               </div>
               
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                {Object.entries(dia.refeicoes).map(([mealKey, options]) => (
-                  <div key={mealKey} className="meal-card" style={{ background: 'white', border: '1px solid var(--border)', borderRadius: '1rem', padding: '1rem' }}>
-                    <div style={{ fontWeight: '600', marginBottom: '0.75rem', fontSize: '0.9rem', color: 'var(--primary)' }}>
-                      {mealLabels[mealKey] || mealKey}
+              {!isEditing ? (
+                <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                  {options.map((opt, idx) => (
+                    <li key={idx} style={{ display: 'flex', gap: '0.5rem', fontSize: '0.875rem', color: 'var(--text-main)' }}>
+                      <span style={{ color: 'var(--text-muted)', fontWeight: '600', minWidth: '1rem' }}>{idx + 1}</span>
+                      <span style={{ background: 'var(--bg-color)', padding: '0.5rem', borderRadius: '0.5rem', flex: 1, border: '1px solid var(--border)' }}>{opt}</span>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                  {options.map((opt, optIdx) => (
+                    <div key={optIdx} style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                      <span style={{ color: 'var(--text-muted)', fontWeight: '600', fontSize: '0.875rem' }}>{optIdx + 1}</span>
+                      <input 
+                        type="text"
+                        value={opt}
+                        onChange={(e) => handleOptionChange(selectedDayIndex, mealKey, optIdx, e.target.value)}
+                        style={{ 
+                          width: '100%', 
+                          padding: '0.6rem', 
+                          borderRadius: '0.5rem', 
+                          border: '1px solid var(--border)', 
+                          fontSize: '0.875rem',
+                          background: 'var(--bg-color)',
+                          color: 'var(--text-main)'
+                        }}
+                      />
                     </div>
-                    
-                    {!isEditing ? (
-                      <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                        {options.map((opt, idx) => (
-                          <li key={idx} style={{ fontSize: '0.85rem', color: 'var(--text-main)', borderLeft: '3px solid var(--primary-light)', paddingLeft: '0.5rem' }}>
-                            {opt}
-                          </li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                        {options.map((opt, optIdx) => (
-                          <input 
-                            key={optIdx}
-                            type="text"
-                            value={opt}
-                            onChange={(e) => handleOptionChange(dayIdx, mealKey, optIdx, e.target.value)}
-                            style={{ 
-                              width: '100%', 
-                              padding: '0.5rem', 
-                              borderRadius: '0.5rem', 
-                              border: '1px solid #f0f0f0', 
-                              fontSize: '0.85rem' 
-                            }}
-                          />
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
             </div>
-          ))}
+          )})}
         </div>
       </div>
     );

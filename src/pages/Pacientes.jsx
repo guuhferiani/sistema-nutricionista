@@ -97,23 +97,28 @@ const Pacientes = () => {
           <div className="patients-grid">
             {filteredPacientes.length > 0 ? (
               filteredPacientes.map(patient => (
-                <Link key={patient.id} to={`/pacientes/${patient.id}`} className="patient-card">
-                  <div className="patient-info-main">
-                    <div className="patient-avatar">
+                <Link key={patient.id} to={`/pacientes/${patient.id}`} className="patient-card" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+                    <div className="patient-avatar" style={{ width: '56px', height: '56px', fontSize: '1.5rem', background: 'var(--primary-glass)' }}>
                       {patient.nome.charAt(0)}
                     </div>
-                    <div className="patient-details">
-                      <h4>{patient.nome}</h4>
-                      <p>{patient.primaryGoal}</p>
-                    </div>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--text-muted)' }}><polyline points="9 18 15 12 9 6"></polyline></svg>
                   </div>
-                  <div className="patient-meta">
-                    <span className="label">Última Consulta</span>
-                    <span className="value">
-                      {patient.lastConsulta !== 'Nenhuma consulta' 
-                        ? new Date(patient.lastConsulta).toLocaleDateString('pt-BR')
-                        : 'Sem consulta'}
-                    </span>
+                  
+                  <div className="patient-details" style={{ marginTop: '0.5rem' }}>
+                    <h4 style={{ fontSize: '1.125rem', marginBottom: '0.25rem' }}>{patient.nome}</h4>
+                    <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>{patient.primaryGoal}</p>
+                  </div>
+                  
+                  <div style={{ borderTop: '1px solid var(--border)', paddingTop: '1rem', marginTop: 'auto' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-muted)', fontSize: '0.875rem' }}>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                      <span>
+                        Última consulta: {patient.lastConsulta !== 'Nenhuma consulta' 
+                          ? new Date(patient.lastConsulta).toLocaleDateString('pt-BR')
+                          : 'Nunca consultou'}
+                      </span>
+                    </div>
                   </div>
                 </Link>
               ))

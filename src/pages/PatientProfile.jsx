@@ -24,6 +24,7 @@ const PatientProfile = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [activeTab, setActiveTab] = useState('pessoal');
+  const [activeMainTab, setActiveMainTab] = useState('dados');
   const [showConsultaModal, setShowConsultaModal] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
@@ -349,14 +350,54 @@ const PatientProfile = () => {
           </div>
         )}
 
+        <div className="main-tabs-header" style={{ display: 'flex', gap: '2rem', marginBottom: '2rem', borderBottom: '1px solid var(--border)' }}>
+          <button 
+            className={`main-tab-btn ${activeMainTab === 'dados' ? 'active' : ''}`} 
+            onClick={() => setActiveMainTab('dados')}
+            style={{ 
+              background: 'transparent', border: 'none', padding: '1rem 0', fontWeight: '600', 
+              color: activeMainTab === 'dados' ? 'var(--primary)' : 'var(--text-muted)',
+              borderBottom: activeMainTab === 'dados' ? '3px solid var(--primary)' : '3px solid transparent',
+              cursor: 'pointer', fontSize: '1rem', transition: 'all 0.2s'
+            }}
+          >
+            Dados do Paciente
+          </button>
+          <button 
+            className={`main-tab-btn ${activeMainTab === 'consultas' ? 'active' : ''}`} 
+            onClick={() => setActiveMainTab('consultas')}
+            style={{ 
+              background: 'transparent', border: 'none', padding: '1rem 0', fontWeight: '600', 
+              color: activeMainTab === 'consultas' ? 'var(--primary)' : 'var(--text-muted)',
+              borderBottom: activeMainTab === 'consultas' ? '3px solid var(--primary)' : '3px solid transparent',
+              cursor: 'pointer', fontSize: '1rem', transition: 'all 0.2s'
+            }}
+          >
+            Evolução e Consultas
+          </button>
+          <button 
+            className={`main-tab-btn ${activeMainTab === 'planos' ? 'active' : ''}`} 
+            onClick={() => setActiveMainTab('planos')}
+            style={{ 
+              background: 'transparent', border: 'none', padding: '1rem 0', fontWeight: '600', 
+              color: activeMainTab === 'planos' ? 'var(--primary)' : 'var(--text-muted)',
+              borderBottom: activeMainTab === 'planos' ? '3px solid var(--primary)' : '3px solid transparent',
+              cursor: 'pointer', fontSize: '1rem', transition: 'all 0.2s'
+            }}
+          >
+            Planos Alimentares
+          </button>
+        </div>
+
         <div className="profile-container">
           
           {/* Section 1: Dados do Paciente */}
+          {activeMainTab === 'dados' && (
           <section className="profile-section">
             <div className="section-header">
               <h3>
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                Dados do Paciente
+                Dados Pessoais e Clínicos
               </h3>
               <div className="tabs-header" style={{ background: 'transparent', border: 'none', marginBottom: 0 }}>
                 <button className={`tab-btn ${activeTab === 'pessoal' ? 'active' : ''}`} onClick={() => setActiveTab('pessoal')}>Pessoal</button>
@@ -483,8 +524,10 @@ const PatientProfile = () => {
               </div>
             </div>
           </section>
+          )}
 
           {/* Section 2: Consultas */}
+          {activeMainTab === 'consultas' && (
           <section className="profile-section">
             <div className="section-header">
               <h3>
@@ -571,8 +614,10 @@ const PatientProfile = () => {
               </div>
             </div>
           </section>
+          )}
 
           {/* Section 3: Planos Alimentares */}
+          {activeMainTab === 'planos' && (
           <section className="profile-section">
             <div className="section-header">
               <h3>
@@ -592,6 +637,7 @@ const PatientProfile = () => {
               />
             </div>
           </section>
+          )}
 
         </div>
 

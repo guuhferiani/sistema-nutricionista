@@ -32,6 +32,25 @@
   --radius-xl: 2rem;
 }
 
+[data-theme="dark"] {
+  --primary-light: hsla(var(--primary-h), var(--primary-s), var(--primary-l), 0.15);
+  
+  --bg-color: hsl(220, 15%, 8%);
+  --card-bg: hsl(220, 15%, 12%);
+  --sidebar-bg: hsl(220, 15%, 6%);
+  --sidebar-text: hsl(215, 15%, 85%);
+  
+  --text-main: hsl(215, 20%, 95%);
+  --text-muted: hsl(215, 15%, 60%);
+  --white: hsl(220, 15%, 14%); /* usado como fundos secundários */
+  --border: hsl(220, 15%, 20%);
+  
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 4px 20px -2px rgba(0, 0, 0, 0.6), 0 2px 8px -1px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 20px 40px -12px rgba(0, 0, 0, 0.7);
+  --shadow-premium: 0 10px 30px -5px hsla(var(--primary-h), var(--primary-s), 50%, 0.15);
+}
+
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
@@ -269,21 +288,20 @@ body {
 
 .patients-grid {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
 }
 
 .patient-card {
-  background: var(--white);
+  background: var(--card-bg);
   padding: 1.5rem;
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
   text-decoration: none;
   color: inherit;
-  border: 1px solid transparent;
+  border: 1px solid var(--border);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
@@ -371,7 +389,7 @@ body {
 
 .tabs-header {
   display: flex;
-  background: #f9fafb;
+  background: var(--bg-color);
   border-bottom: 1px solid var(--border);
   overflow-x: auto;
   scrollbar-width: none; /* Firefox */
@@ -873,7 +891,7 @@ textarea:focus {
   background: var(--card-bg);
   border-radius: 1.25rem;
   box-shadow: var(--shadow-md);
-  border: 1px solid var(--white);
+  border: 1px solid var(--border);
   overflow: hidden;
   margin-bottom: 2rem;
 }
@@ -884,7 +902,7 @@ textarea:focus {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #f9fafb;
+  background: var(--bg-color);
 }
 
 .section-header h3 {
@@ -906,7 +924,7 @@ textarea:focus {
   height: 350px;
   margin-bottom: 2rem;
   padding: 1.5rem;
-  background: #ffffff;
+  background: var(--card-bg);
   border-radius: 1rem;
   border: 1px solid var(--border);
 }
@@ -919,7 +937,7 @@ textarea:focus {
   justify-content: center;
   color: var(--text-muted);
   gap: 1rem;
-  background: #f9fafb;
+  background: var(--bg-color);
   border-radius: 0.75rem;
 }
 
@@ -986,7 +1004,7 @@ textarea:focus {
 
 .consulta-obs {
   grid-column: 1 / -1;
-  background: #f9fafb;
+  background: var(--bg-color);
   padding: 1rem;
   border-radius: 0.75rem;
   font-size: 0.875rem;
@@ -1034,7 +1052,7 @@ textarea:focus {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: var(--white);
+  background: var(--card-bg);
   position: sticky;
   top: 0;
   z-index: 10;
@@ -1074,7 +1092,7 @@ textarea:focus {
   display: flex;
   justify-content: flex-end;
   gap: 1rem;
-  background: #f9fafb;
+  background: var(--bg-color);
 }
 
 /* Toasts/Success Message */
@@ -1117,11 +1135,11 @@ textarea:focus {
   margin-bottom: 0.75rem;
   cursor: pointer;
   transition: all 0.2s;
-  background: var(--white);
+  background: var(--bg-color);
 }
 
 .meal-plan-item:hover {
-  background: #f0fdf4;
+  background: var(--primary-light);
   border-color: var(--primary);
   transform: translateX(4px);
 }
@@ -1149,7 +1167,7 @@ textarea:focus {
   align-items: center;
   justify-content: center;
   padding: 4rem 2rem;
-  background: var(--white);
+  background: var(--card-bg);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-lg);
   animation: fadeIn 0.5s ease;

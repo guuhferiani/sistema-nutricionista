@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabaseClient';
 const DietPlanManual = ({ patient, initialPlan = null, onSaveSuccess, onClose }) => {
   const [saving, setSaving] = useState(false);
   const [plan, setPlan] = useState(null);
+  const [selectedDayIndex, setSelectedDayIndex] = useState(0);
 
   useEffect(() => {
     if (initialPlan) {
@@ -99,36 +100,66 @@ const DietPlanManual = ({ patient, initialPlan = null, onSaveSuccess, onClose })
         </div>
       </header>
 
-      <div className="diet-grid">
-        {plan.plano_semanal.map((dia, dayIdx) => (
-          <div key={dia.dia} className="day-column">
-            <div className="day-header">
-              {dia.dia}
+      <div className="days-filter-container" style={{ display: 'flex', gap: '0.5rem', marginBottom: '2rem', overflowX: 'auto', paddingBottom: '0.5rem' }}>
+        {plan.plano_semanal.map((dia, idx) => (
+          <button
+            key={dia.dia}
+            onClick={() => setSelectedDayIndex(idx)}
+            style={{
+              padding: '0.5rem 1rem',
+              borderRadius: '2rem',
+              border: '1px solid var(--border)',
+              background: selectedDayIndex === idx ? 'var(--primary)' : 'transparent',
+              color: selectedDayIndex === idx ? 'white' : 'var(--text-main)',
+              fontWeight: '600',
+              cursor: 'pointer',
+              whiteSpace: 'nowrap',
+              transition: 'all 0.2s'
+            }}
+          >
+            {dia.dia}
+          </button>
+        ))}
+      </div>
+
+      <div className="diet-grid" style={{ 
+        display: 'grid', 
+        gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', 
+        gap: '1.5rem' 
+      }}>
+        {['cafe_da_manha', 'lanche_manha', 'almoco', 'lanche_tarde', 'jantar'].map((mealKey) => {
+          const options = plan.plano_semanal[selectedDayIndex].refeicoes[mealKey];
+          if (!options) return null;
+          return (
+          <div key={mealKey} className="meal-card" style={{ background: 'var(--card-bg)', border: '1px solid var(--border)', borderRadius: '1rem', padding: '1.25rem', boxShadow: 'var(--shadow-sm)' }}>
+            <div className="meal-title" style={{ fontWeight: '700', marginBottom: '1rem', fontSize: '1rem', color: 'var(--primary)' }}>
+              {mealLabels[mealKey] || mealKey}
             </div>
-            
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-              {Object.entries(dia.refeicoes).map(([mealKey, options]) => (
-                <div key={mealKey} className="meal-card">
-                  <div className="meal-title">
-                    {mealLabels[mealKey] || mealKey}
-                  </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                    {options.map((opt, optIdx) => (
-                      <input 
-                        key={optIdx}
-                        type="text"
-                        className="option-input"
-                        value={opt}
-                        onChange={(e) => handleOptionChange(dayIdx, mealKey, optIdx, e.target.value)}
-                        placeholder={`Opção ${optIdx + 1}`}
-                      />
-                    ))}
-                  </div>
+              {options.map((opt, optIdx) => (
+                <div key={optIdx} style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                  <span style={{ color: 'var(--text-muted)', fontWeight: '600', fontSize: '0.875rem' }}>{optIdx + 1}</span>
+                  <input 
+                    type="text"
+                    className="option-input"
+                    value={opt}
+                    onChange={(e) => handleOptionChange(selectedDayIndex, mealKey, optIdx, e.target.value)}
+                    placeholder={`Opção ${optIdx + 1}`}
+                    style={{ 
+                      width: '100%', 
+                      padding: '0.6rem', 
+                      borderRadius: '0.5rem', 
+                      border: '1px solid var(--border)', 
+                      fontSize: '0.875rem',
+                      background: 'var(--bg-color)',
+                      color: 'var(--text-main)'
+                    }}
+                  />
                 </div>
               ))}
             </div>
           </div>
-        ))}
+        )})}
       </div>
     </div>
   );
